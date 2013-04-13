@@ -23,7 +23,8 @@ You could use _Guards_ and _Hooks_ as you would normally use with regular comman
 Additionally you could use the `withPayloads()` method to add some data that can be used to satisfy the injection points of the sub commands. The data provided will be available to the guards and hooks applied to the sub command as well.
 
 Here's an example of a simple sequential macro:
-```public class MyMacro extends SequenceMacro {
+```ActionScript
+public class MyMacro extends SequenceMacro {
 	override public function prepare() {
 		addSubCommand(CommandA);
 		addSubCommand(CommandB);
@@ -40,7 +41,8 @@ In this case you command can subclass Macrobot's AsyncCommand and call `dispatch
 `dispatchComplete()` receives a single parameter which reports whether the subcommand completed successfully.
 
 Here's an example of a simulated asynchronous sub command:
-```public class MyCommandWhichHappensToBeASubcommand extends AsyncCommand     {
+```ActionScript
+public class MyCommandWhichHappensToBeASubcommand extends AsyncCommand     {
    	protected var timer:Timer;
    	override public function execute():void {
    		timer = new Timer(50, 1);
