@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!--ant-->
+<project name="robotlegs-utilities-macrobot" basedir="../" default="package">
+    <property file="build/user.properties"/>
+    <property file="build/build.properties"/>
+
+    <taskdef resource="flexUnitTasks.tasks" classpath="build/tools/flexUnitTasks-4.1.0-8.jar"/>
+
+    <target name="clean" description="Remove all directories created during the build process">
+        <echo>[clean] Removing Build and Report directories</echo>
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset dir="reports" defaultexcludes="false">
+                <include name="**/*"/>
+            </fileset>
+            <fileset dir="${dist.dir}" defaultexcludes="false">
+                <include name="**/*"/>
+            </fileset>
+        </delete>
+        <echo>[clean] Build and Report directories removed</echo>
+    </target>
+
+    <target name="init" depends="clean" description="Create directories needed for the build process">
+        <echo>[init] Creating Bin and Report directories</echo>
+        <mkdir dir="${bin.dir}"/>
+        <mkdir dir="reports"/>
+        <echo>[init] Bin and Report directories created</echo>
+    </target>
+
+    <target name="compile" depends="init" description="Compile Release SWC">
+        <echo>[compile] Compiling release SWC</echo>
+        <echo>[compile] Using Flex SDK at: ${FLEX_HOME}</echo>
+        <java jar="${FLEX_HOME}/lib/compc.jar" dir="${FLEX_HOME}/frameworks" fork="true" failonerror="true">
+            <arg value="-output=${bin.dir}/${project.name.versioned}.swc"/>
+            <arg value="-include-sources+=${main.src.dir}"/>
+            <arg value="-library-path+=${lib.dir}"/>
+            <arg value="-incremental=true"/>
+            <arg value="-static-link-runtime-shared-libraries=true"/>
+            <arg value="-verbose-stacktraces=true"/>
+            <arg value="-headless-server=true"/>
+            <arg line="-source-path+='./','${main.src.dir}'"/>
+        </java>
+        <echo>[compile] Release SWC ${project.name.versioned}.swc created successfully</echo>
+    </target>
+
+    <target name="test" depends="compile" description="Run Unit Tests ">
+        <echo>[test] Running Unit Tests</echo>
+        <java jar="${FLEX_HOME}/lib/mxmlc.jar" dir="${FLEX_HOME}/frameworks" fork="true" failonerror="true">
+            <arg value="${test.src.dir}/TestRunner.mxml"/>
+            <arg value="-source-path=${main.src.dir}"/>
+            <arg value="-output=${bin.dir}/TestRunner.swf"/>
+            <arg value="-default-size=200,200"/>
+            <arg value="-default-background-color=0x000000"/>
+            <arg value="-library-path+=${lib.dir}"/>
+            <arg value="-incremental=true"/>
+            <arg value="-verbose-stacktraces=true"/>
+            <arg value="-headless-server=false"/>
+            <arg value="-debug=true"/>
+        </java>
+
+        <flexunit swf="bin/TestRunner.swf" toDir="${report.dir}" haltonfailure="true" verbose="true" localTrusted="true"/>
+        <junitreport todir="reports">
+            <fileset dir="reports">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="reports/html"/>
+        </junitreport>
+        <echo>[test] Finished running Unit Tests</echo>
+    </target>
+
+    <target name="asdoc" depends="test" description="Build Documentation">
+        <echo>[asdoc] Generating ASDOC documentation</echo>
+        <java jar="${FLEX_HOME}/lib/asdoc.jar" dir="${FLEX_HOME}/frameworks" fork="true" failonerror="true">
+            <arg line="-external-library-path+=${lib.dir}"/>
+            <arg line="-doc-sources+=${main.src.dir}"/>
+            <arg line="-source-path+=${main.src.dir}"/>
+            <arg line="-output ${doc.dir}"/>
+            <arg value="-keep-xml=true"/>
+            <arg value="-lenient=true"/>
+            <arg line="-window-title 'Macrobot ${version.num}'"/>
+            <arg line="-main-title 'Macrobot ${version.num}'"/>
+            <arg line="-footer 'Macrobot - https://github.com/alebianco/robotlegs-utilities-macrobot'"/>
+        </java>
+        <echo>[asdoc] ASDOC documentation generated successfully</echo>
+    </target>
+
+    <target name="package" depends="asdoc" description="Package the Build">
+        <tstamp>
+            <format property="touch.time" pattern="MMddyyyyhhmm" unit="hour"/>
+        </tstamp>
+        <echo>[package] Packaging Release</echo>
+        <mkdir dir="${dist.dir}"/>
+        <copy file="${bin.dir}/${project.name.versioned}.swc" todir="${dist.dir}"/>
+        <copy todir="${dist.dir}/docs">
+            <fileset dir="${doc.dir}"/>
+        </copy>
+        <delete dir="${dist.dir}/docs/tempdita"/>
+        <zip destfile="${dist.dir}/${project.name.versioned}.swc" update="true">
+            <zipfileset dir="${doc.dir}/tempdita" prefix="docs">
+                <include name="*packages.dita*"/>
+                <include name="*eu.alebianco.*"/>
+            </zipfileset>
+        </zip>
+        <copy file="LICENSE.md" tofile="${dist.dir}/license.txt" overwrite="true"/>
+        <copy file="CHANGELOG.md" tofile="${dist.dir}/changelog.txt" overwrite="true"/>
+        <zip destfile="${dist.dir}/${project.name.versioned}_${touch.time}.zip">
+            <fileset dir="${dist.dir}"/>
+        </zip>
+        <delete file="${dist.dir}/${project.name.versioned}.swc"/>
+        <delete file="${dist.dir}/readme.txt"/>
+        <delete file="${dist.dir}/license.txt"/>
+        <delete file="${dist.dir}/changelog.txt"/>
+        <delete dir="${dist.dir}/bin"/>
+        <delete dir="${dist.dir}/src"/>
+        <delete dir="${dist.dir}/libs"/>
+        <delete dir="${dist.dir}/docs"/>
+        <echo>[package] Release packaged successfully</echo>
+    </target>
+</project>
+

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application
+        xmlns:s="library://ns.adobe.com/flex/spark"
+        xmlns:fx="http://ns.adobe.com/mxml/2009"
+        width="200"
+        height="200"
+        creationComplete="onCreationComplete()"
+        backgroundColor="#000000"
+        color="#FFFFFF"
+        >
+
+    <fx:Script>
+		<![CDATA[
+        import org.flexunit.internals.TraceListener;
+        import org.flexunit.listeners.CIListener;
+        import org.flexunit.runner.FlexUnitCore;
+
+        import suites.FullSuite;
+
+        private var core:FlexUnitCore;
+
+        private function onCreationComplete():void {
+            core = new FlexUnitCore();
+            core.addListener(new CIListener());
+            core.addListener(new TraceListener());
+            core.run(FullSuite);
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Label
+            text="Macrobot runner"
+            horizontalCenter="0"
+            verticalCenter="0"
+            />
+
+</s:Application>
