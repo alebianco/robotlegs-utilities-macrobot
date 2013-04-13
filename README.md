@@ -71,7 +71,7 @@ Use the `build.xml` ant script you'll find in the **build** folder, to build the
 
 ## Contributing
 
-If you want to contribute to the project refer to the [CONTRIBUTING.mc](CONTRIBUTING.md) document for guidelines.
+If you want to contribute to the project refer to the [CONTRIBUTING.md](CONTRIBUTING.md) document for guidelines.
 
 ## Roadmap
 

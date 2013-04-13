@@ -1,6 +1,6 @@
 # Contributing to Macrobot
 
-♥ [Macrobot](http://html5boilerplate.com) and want to get involved?
+♥ [Macrobot](https://github.com/alebianco/robotlegs-utilities-macrobot) and want to get involved?
 Thanks! There are plenty of ways you can help!
 
 
