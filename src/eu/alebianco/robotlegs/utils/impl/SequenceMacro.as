@@ -11,39 +11,64 @@ package eu.alebianco.robotlegs.utils.impl {
 import eu.alebianco.robotlegs.utils.api.IMacro;
 import eu.alebianco.robotlegs.utils.api.IMacroMapping;
 
+import org.swiftsuspenders.Injector;
+
 import robotlegs.bender.extensions.commandCenter.api.ICommand;
-import robotlegs.bender.framework.impl.guardsApprove;
 
 public class SequenceMacro extends AbstractMacro implements IMacro {
-    public var atomic:Boolean = true;
 
-    protected var executionIndex:uint;
+    private var executionIndex:uint;
+    private var success:Boolean = true;
+    private var running:Boolean = false;
+
+    private var _atomic:Boolean = true;
+    public function get atomic():Boolean {
+        return _atomic;
+    }
+    public function set atomic(value:Boolean):void {
+        if (!running) {
+            _atomic = value;
+        }
+    }
+
+    public function SequenceMacro(injector:Injector) {
+        super(injector);
+    }
 
     override public function execute():void {
         super.execute();
+        running = true
         executionIndex = 0;
         executeNext();
     }
 
     protected function executeNext():void {
-        if (commands && executionIndex < commands.length) {
-            var mapping:IMacroMapping = commands[executionIndex++];
-            if (guardsApprove(mapping.guards, injector)) {
-                var command:ICommand = prepareCommand(mapping);
+        if (hasCommands) {
+            const mapping:IMacroMapping = commands[executionIndex++];
+            const command:ICommand = prepareCommand(mapping);
+            if (command) {
                 executeCommand(command);
-            }
-            else {
+            } else {
                 executeNext();
             }
-        }
-        else {
+        } else {
             dispatchComplete(success);
         }
     }
 
+    private function get hasCommands():Boolean {
+        return commands && executionIndex < commands.length;
+    }
+
     override protected function commandCompleteHandler(success:Boolean):void {
         this.success &&= success;
-        (atomic || this.success) ? executeNext() : dispatchComplete(false);
+        (_atomic || this.success) ? executeNext() : dispatchComplete(false);
+    }
+
+    override protected function dispatchComplete(success:Boolean):void {
+        running = false;
+        executionIndex = 0;
+        super.dispatchComplete(success);
     }
 }
 }

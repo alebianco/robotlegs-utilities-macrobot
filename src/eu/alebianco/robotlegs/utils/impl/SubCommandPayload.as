@@ -20,6 +20,7 @@ public class SubCommandPayload {
         return _name;
     }
 
+    // TODO process when creating, to avoid processing it multiple times when executing
     public function get dataClass():Class {
         return _dataClass;
     }

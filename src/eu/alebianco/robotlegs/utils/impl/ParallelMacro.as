@@ -10,46 +10,54 @@ package eu.alebianco.robotlegs.utils.impl {
 
 import eu.alebianco.robotlegs.utils.api.IMacro;
 import eu.alebianco.robotlegs.utils.api.IMacroMapping;
-import eu.alebianco.robotlegs.utils.dsl.MacroMapping;
+
+import org.swiftsuspenders.Injector;
 
 import robotlegs.bender.extensions.commandCenter.api.ICommand;
-import robotlegs.bender.framework.impl.guardsApprove;
 
 public class ParallelMacro extends AbstractMacro implements IMacro {
-    protected var numCommandsExecuting:uint = 0;
+
+    private var executionCount:uint = 0;
+    private var success:Boolean = true;
+    private var running:Boolean = false;
+
+    public function ParallelMacro(injector:Injector) {
+        super(injector);
+    }
 
     override public function execute():void {
         super.execute();
-
-        var approvedCommands:Vector.<IMacroMapping> = findApprovedCommands(commands);
-        if (approvedCommands && approvedCommands.length > 0) {
-            numCommandsExecuting = approvedCommands.length;
-            for each (var descriptor:Object in approvedCommands) {
-                var command:ICommand = prepareCommand(descriptor as MacroMapping);
-                success ? executeCommand(command) : dispatchComplete(false);
+        if (hasCommands) {
+            running = true;
+            for each (var mapping:IMacroMapping in commands) {
+                if (!success) break;
+                const command:ICommand = prepareCommand(mapping);
+                if (command) {
+                    executeCommand(command);
+                }
             }
-        }
-        else {
+        } else {
             dispatchComplete(true);
         }
     }
 
-    protected function findApprovedCommands(mappings:Vector.<IMacroMapping>):Vector.<IMacroMapping> {
-        const approvedMappings:Vector.<IMacroMapping> = new Vector.<IMacroMapping>();
-        for each (var mapping:IMacroMapping in mappings) {
-            if (guardsApprove(mapping.guards, injector))
-                approvedMappings.push(mapping);
-        }
-        return approvedMappings;
+    private function get hasCommands():Boolean {
+        return commands && commands.length > 0;
     }
 
     override protected function commandCompleteHandler(success:Boolean):void {
+        executionCount++;
         this.success &&= success;
-        numCommandsExecuting--;
-
-        if (numCommandsExecuting == 0) {
+        // TODO may receive other calls after dispatching the complete ?
+        if (!this.success || executionCount == commands.length) {
             dispatchComplete(this.success);
         }
+    }
+
+    override protected function dispatchComplete(success:Boolean):void {
+        running = false;
+        executionCount = 0;
+        super.dispatchComplete(success);
     }
 }
 }
