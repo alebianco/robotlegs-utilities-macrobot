@@ -9,32 +9,25 @@
 package eu.alebianco.robotlegs.utils.impl {
 
 import eu.alebianco.robotlegs.utils.api.IMacro;
-import eu.alebianco.robotlegs.utils.api.IMacroMapping;
-
-import org.swiftsuspenders.Injector;
-
-import robotlegs.bender.extensions.commandCenter.api.ICommand;
+import eu.alebianco.robotlegs.utils.api.ISubCommandMapping;
 
 public class ParallelMacro extends AbstractMacro implements IMacro {
 
     private var executionCount:uint = 0;
+
+    private var commands:Vector.<ISubCommandMapping>;
+
     private var success:Boolean = true;
     private var running:Boolean = false;
 
-    public function ParallelMacro(injector:Injector) {
-        super(injector);
-    }
-
     override public function execute():void {
         super.execute();
+        commands = mappings.getList();
         if (hasCommands) {
             running = true;
-            for each (var mapping:IMacroMapping in commands) {
+            for each (var mapping:ISubCommandMapping in commands) {
                 if (!success) break;
-                const command:ICommand = prepareCommand(mapping);
-                if (command) {
-                    executeCommand(command);
-                }
+                executeCommand(mapping);
             }
         } else {
             dispatchComplete(true);
@@ -42,22 +35,23 @@ public class ParallelMacro extends AbstractMacro implements IMacro {
     }
 
     private function get hasCommands():Boolean {
-        return commands && commands.length > 0;
+        return mappings && commands.length > 0;
     }
 
     override protected function commandCompleteHandler(success:Boolean):void {
         executionCount++;
         this.success &&= success;
-        // TODO may receive other calls after dispatching the complete ?
-        if (!this.success || executionCount == commands.length) {
+        if (running && (!this.success || executionCount == commands.length)) {
             dispatchComplete(this.success);
         }
     }
 
     override protected function dispatchComplete(success:Boolean):void {
-        running = false;
-        executionCount = 0;
         super.dispatchComplete(success);
+        running = false;
+        this.success = true;
+        executionCount = 0;
+        commands = null;
     }
 }
 }

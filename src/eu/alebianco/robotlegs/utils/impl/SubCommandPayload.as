@@ -7,22 +7,31 @@
  * Copyright © 2011 - 2013 Alessandro Bianco
  */
 package eu.alebianco.robotlegs.utils.impl {
-public class SubCommandPayload {
+import org.swiftsuspenders.reflection.DescribeTypeReflector;
+import org.swiftsuspenders.reflection.Reflector;
+
+final public class SubCommandPayload {
     private var _data:*;
-    private var _dataClass:Class;
+    private var _type:Class;
     private var _name:String;
 
-    public function SubCommandPayload(data:* = null) {
+    private static var _reflector:Reflector;
+    private function get reflector():Reflector {
+        return _reflector ||= new DescribeTypeReflector();
+    }
+
+    public function SubCommandPayload(data:*, type:Class = null) {
+        if (!data) throw new ArgumentError("Payload data can't be null");
         _data = data;
+        _type = type;
     }
 
     public function get name():String {
         return _name;
     }
 
-    // TODO process when creating, to avoid processing it multiple times when executing
-    public function get dataClass():Class {
-        return _dataClass;
+    public function get type():Class {
+        return _type ||= reflector.getClass(data);
     }
 
     public function get data():* {
@@ -34,8 +43,8 @@ public class SubCommandPayload {
         return this;
     }
 
-    public function fromClass(dataClass:Class):SubCommandPayload {
-        _dataClass = dataClass
+    public function ofClass(type:Class):SubCommandPayload {
+        _type = type
         return this;
     }
 }

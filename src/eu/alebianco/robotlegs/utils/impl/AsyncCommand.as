@@ -18,7 +18,7 @@ public class AsyncCommand implements IAsyncCommand {
     [Inject]
     public var context:IContext;
 
-    public function addCompletionListener(listener:Function):void {
+    public function registerCompleteCallback(listener:Function):void {
         listeners ||= [];
         listeners.unshift(listener);
     }

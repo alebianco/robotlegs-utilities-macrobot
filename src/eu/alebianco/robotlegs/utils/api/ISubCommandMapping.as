@@ -7,14 +7,10 @@
  * Copyright © 2011 - 2013 Alessandro Bianco
  */
 package eu.alebianco.robotlegs.utils.api {
-public interface IMacroMapping {
-    function withPayloads(...payloads):IMacroMapping;
-
-    function withGuards(...guards):IMacroMapping;
-
-    function withHooks(...hooks):IMacroMapping;
-
+public interface ISubCommandMapping {
     function get commandClass():Class;
+
+    function get executeMethod():String;
 
     function get guards():Array;
 

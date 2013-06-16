@@ -10,6 +10,6 @@ package eu.alebianco.robotlegs.utils.api {
 import robotlegs.bender.extensions.commandCenter.api.ICommand;
 
 public interface IAsyncCommand extends ICommand {
-    function addCompletionListener(listener:Function):void;
+    function registerCompleteCallback(callback:Function):void;
 }
 }

@@ -7,13 +7,13 @@
  * Copyright © 2011 - 2013 Alessandro Bianco
  */
 package eu.alebianco.robotlegs.utils.api {
-import eu.alebianco.robotlegs.utils.dsl.MacroMapping;
+
+import eu.alebianco.robotlegs.utils.dsl.ISubCommandMapper;
+import eu.alebianco.robotlegs.utils.dsl.ISubCommandUnMapper;
 
 import robotlegs.bender.extensions.commandCenter.api.ICommand;
 
-public interface IMacro extends ICommand {
+public interface IMacro extends ICommand, ISubCommandMapper, ISubCommandUnMapper {
     function prepare():void;
-
-    function addSubCommand(commandClass:Class):MacroMapping;
 }
 }
