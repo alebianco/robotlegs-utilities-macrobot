@@ -26,9 +26,93 @@ Here's an example of a simple sequential macro:
 ```ActionScript
 public class MyMacro extends SequenceMacro {
 	override public function prepare() {
-		addSubCommand(CommandA);
-		addSubCommand(CommandB);
-		addSubCommand(CommandC);
+		add(CommandA);
+		add(CommandB);
+		add(CommandC);
+	}
+}
+```
+
+### Using Guards
+
+Guards are used to approve or deny the execution of one of the subcommands.
+
+```ActionScript
+public class DailyRoutine extends SequenceMacro {
+	override public function prepare() {
+		add(Work);
+		add(Party).withGuards(IsFriday); // It will only party on fridays
+		add(Sleep);
+	}
+}
+
+public class IsFriday implements IGuard {
+	public funciton approve():Boolean {
+		return new Date().day = 5;
+	}
+}
+```
+Refer to the [Robotlegs documentation](https://github.com/robotlegs/robotlegs-framework/blob/master/src/robotlegs/bender/framework/readme-guards.md) for more details about Guards.
+
+### Using Hooks
+
+Hooks run before the subcommands. They are typically used to run custom actions based on environmental conditions.  
+Hooks will run only if the applied Guards approve the execution of the command.
+
+```ActionScript
+public class DailyRoutine extends SequenceMacro {
+	override public function prepare() {
+		add(Work);
+		add(Party).withGuards(IsFriday); // It will only party on fridays
+		add(Sleep).withHook(GoToHome); // Try to avoid sleeping at the office or the pub
+	}
+}
+
+public class IsFriday implements IHook {
+	[Inject] public var me:Person;
+	public funciton hook():void {
+		me.goHome();
+	}
+}
+```
+Refer to the [Robotlegs documentation](https://github.com/robotlegs/robotlegs-framework/blob/master/src/robotlegs/bender/framework/readme-hooks.md) for more details about Hooks.
+
+
+### Using Payloads
+
+Payloads are used to temporary inject some data, which would not be available otherwise, and make it available to the subcommand, it's guards and it's hooks.  
+
+You can use pass the data to be injected directly to the `withPayloads()` method, for a normal injection.
+```ActionScript
+public class Macro extends SequenceMacro {
+	override public function prepare() {
+		const data:SomeModel = new SomeModel()
+		add(Action).withPayloads(data);
+	}
+}
+
+public class Action implements ICommand {
+	[Inject] public var data:SomeModel;
+	public function execute():void {
+		data.property = 'value'
+	}
+}
+```
+
+Or you can use the `SubCommandPayload` class to create a more complex injection.
+```ActionScript
+public class Macro extends SequenceMacro {
+	override public function prepare() {
+		const data:SomeModel = new SomeModel()
+		const payload:SubCommandPayload = new SubCommandPayload(data).withName('mydata').ofClass(IModel)
+		add(Action).withPayloads(payload);
+	}
+}
+
+public class Action implements ICommand {
+	[Inject(name='mydata'] public var data:IModel;
+	public function execute():void {
+		data.property = 'value'
 	}
 }
 ```
@@ -42,19 +126,30 @@ In this case you command can subclass Macrobot's AsyncCommand and call `dispatch
 
 Here's an example of a simulated asynchronous sub command:
 ```ActionScript
-public class MyCommandWhichHappensToBeASubcommand extends AsyncCommand     {
-   	protected var timer:Timer;
-   	override public function execute():void {
-   		timer = new Timer(50, 1);
-   		timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
-   		timer.start();
-   	}
-   	protected function timerCompleteHandler(event:TimerEvent):void {
-   		timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
-   		timer = null;
-   		dispatchComplete(true);
-   	}
+public class DelayCommand extends AsyncCommand     {
+   protected var timer:Timer;
+   override public function execute():void {
+   	timer = new Timer(1000, 1);
+   	timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
+   	timer.start();
    }
+   protected function timerCompleteHandler(event:TimerEvent):void {
+   	timer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
+   	timer = null;
+   	dispatchComplete(true);
+   }
+}
+   
+public class MyMacro extends SequenceMacro     {
+   override public function prepare():void {
+   	add(DelayCommand)
+   	add(OtherCommand)
+   	registerCompleteCallback(onComplete)
+   }
+   protected function onComplete(success):void {
+   	trace('all commands have been executed')
+   }
+}
 ```
 
 ### Atomic execution
