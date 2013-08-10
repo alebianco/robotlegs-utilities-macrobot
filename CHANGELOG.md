@@ -1,5 +1,11 @@
 ## HEAD
 
+### 0.9.6 (August 10, 2013)
+
+* updated to Robotlegs 2.1.0
+* fixed issue with mapping payloads using raw data
+* added the first two tests (yay!) in the suite to cover the payload issue
+
 ### 0.9.5 (June 16, 2013)
 
 * complete refactoring
