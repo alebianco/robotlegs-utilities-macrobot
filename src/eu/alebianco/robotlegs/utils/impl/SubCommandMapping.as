@@ -54,7 +54,15 @@ final internal class SubCommandMapping implements ISubCommandMapping, ISubComman
     }
 
     public function withPayloads(...payloads):ISubCommandConfigurator {
-        _payloads = _payloads.concat.apply(null, payloads);
+        for each (var object:Object in payloads) {
+            var payload:SubCommandPayload;
+            if (object is SubCommandPayload) {
+                payload = object as SubCommandPayload;
+            } else {
+                payload = new SubCommandPayload(object, object["constructor"])
+            }
+            _payloads.push(payload);
+        }
         return this;
     }
 

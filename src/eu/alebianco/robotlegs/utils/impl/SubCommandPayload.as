@@ -27,7 +27,7 @@ final public class SubCommandPayload {
     }
 
     public function get name():String {
-        return _name;
+        return _name || "";
     }
 
     public function get type():Class {
@@ -44,7 +44,7 @@ final public class SubCommandPayload {
     }
 
     public function ofClass(type:Class):SubCommandPayload {
-        _type = type
+        _type = type;
         return this;
     }
 }

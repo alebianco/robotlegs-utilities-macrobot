@@ -33,7 +33,7 @@ public class SequenceMacro extends AbstractMacro implements IMacro {
 
     override public function execute():void {
         super.execute();
-        running = true
+        running = true;
         executionIndex = 0;
         commands = mappings.getList();
         executeNext();
