@@ -7,11 +7,11 @@
  * Copyright © 2011 - 2013 Alessandro Bianco
  */
 package suites {
-import eu.alebianco.robotlegs.utils.PlaceholderTest;
+import eu.alebianco.robotlegs.utils.PayloadsTest;
 
 [RunWith("org.flexunit.runners.Suite")]
 [Suite]
 public class FullSuite {
-    public var placeholder:PlaceholderTest;
+    public var payloads:PayloadsTest;
 }
 }
