@@ -48,7 +48,7 @@ public class DailyRoutine extends SequenceMacro {
 
 public class IsFriday implements IGuard {
 	public funciton approve():Boolean {
-		return new Date().day = 5;
+		return new Date().day == 5;
 	}
 }
 ```
