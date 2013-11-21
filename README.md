@@ -129,6 +129,7 @@ Here's an example of a simulated asynchronous sub command:
 public class DelayCommand extends AsyncCommand     {
    protected var timer:Timer;
    override public function execute():void {
+   	super.execute();
    	timer = new Timer(1000, 1);
    	timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
    	timer.start();
