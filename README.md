@@ -110,7 +110,7 @@ public class Macro extends SequenceMacro {
 }
 
 public class Action implements ICommand {
-	[Inject(name='mydata'] public var data:IModel;
+	[Inject(name='mydata')] public var data:IModel;
 	public function execute():void {
 		data.property = 'value'
 	}
