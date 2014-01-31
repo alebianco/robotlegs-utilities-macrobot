@@ -72,6 +72,19 @@ public class PayloadsTest {
         dispatcher.dispatchEvent(event);
         assertThat(reported, array(MacroWithSimplePayload, HelloCommand, "world"));
     }
+
+	/**
+	 * assurance that Proxy, Number, XML, XMLList, Vector instances are managed correctly
+	 * for more info see: https://github.com/robotlegs/swiftsuspenders/blob/master/src/org/swiftsuspenders/reflection/ReflectorBase.as
+	 */
+
+	[Test]
+	public function number_values_are_mapped_as_payloads():void {
+		subject.map("trigger", Event).toCommand(MacroWithNumberPayload);
+		const event:Event = new Event("trigger");
+		dispatcher.dispatchEvent(event);
+		assertThat(reported, array(MacroWithNumberPayload, NumberTestCommand, Math.PI));
+	}
 }
 }
 
@@ -135,4 +148,34 @@ class NamedHelloCommand extends Command {
     override public function execute():void {
         reportingFunc(who)
     }
+}
+
+//testing number
+
+class MacroWithNumberPayload extends SequenceMacro {
+	[Inject(name="reportingFunction")]
+	public var reportingFunc:Function;
+
+	override public function prepare():void {
+		reportingFunc(MacroWithNumberPayload);
+		add(NumberTestCommand).withPayloads(Math.PI);
+	}
+}
+
+class NumberTestCommand extends Command {
+
+	[Inject]
+	public var number:Number;
+
+	[Inject(name="reportingFunction")]
+	public var reportingFunc:Function;
+
+	[PostConstruct]
+	public function init():void {
+		reportingFunc(NumberTestCommand);
+	}
+
+	override public function execute():void {
+		reportingFunc(number);
+	}
 }
