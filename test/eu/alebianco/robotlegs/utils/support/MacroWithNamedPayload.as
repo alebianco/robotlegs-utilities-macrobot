@@ -17,7 +17,7 @@ public class MacroWithNamedPayload extends SequenceMacro {
     override public function prepare():void {
         reportingFunc(MacroWithNamedPayload);
         var payload:SubCommandPayload = new SubCommandPayload("world", String).withName("target");
-        add(NamedHelloCommand).withPayloads(payload);
+        add(NamedStringTestCommand).withPayloads(payload);
     }
 }
 }

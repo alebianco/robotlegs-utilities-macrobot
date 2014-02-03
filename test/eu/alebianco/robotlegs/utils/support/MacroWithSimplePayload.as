@@ -10,12 +10,13 @@ package eu.alebianco.robotlegs.utils.support {
 import eu.alebianco.robotlegs.utils.impl.SequenceMacro;
 
 public class MacroWithSimplePayload extends SequenceMacro {
+
     [Inject(name="reportingFunction")]
     public var reportingFunc:Function;
 
     override public function prepare():void {
         reportingFunc(MacroWithSimplePayload);
-        add(HelloCommand).withPayloads("world");
+        add(TestStringCommand).withPayloads("world");
     }
 }
 }

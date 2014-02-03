@@ -9,17 +9,17 @@
 package eu.alebianco.robotlegs.utils.support {
 import robotlegs.bender.bundles.mvcs.Command;
 
-public class NumberTestCommand extends Command {
+public class TestIntCommand extends Command {
 
     [Inject]
-    public var number:Number;
+    public var number:int;
 
     [Inject(name="reportingFunction")]
     public var reportingFunc:Function;
 
     [PostConstruct]
     public function init():void {
-        reportingFunc(NumberTestCommand);
+        reportingFunc(TestIntCommand);
     }
 
     override public function execute():void {
