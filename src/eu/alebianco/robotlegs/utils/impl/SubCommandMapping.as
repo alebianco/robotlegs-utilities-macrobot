@@ -59,7 +59,7 @@ final internal class SubCommandMapping implements ISubCommandMapping, ISubComman
             if (object is SubCommandPayload) {
                 payload = object as SubCommandPayload;
             } else {
-                payload = new SubCommandPayload(object, object["constructor"])
+                payload = new SubCommandPayload(object);
             }
             _payloads.push(payload);
         }
