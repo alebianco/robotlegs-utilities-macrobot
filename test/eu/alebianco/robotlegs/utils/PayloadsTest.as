@@ -7,12 +7,14 @@
  * Copyright © 2013 Alessandro Bianco
  */
 package eu.alebianco.robotlegs.utils {
-import eu.alebianco.robotlegs.utils.support.HelloCommand;
+import eu.alebianco.robotlegs.utils.support.TestIntCommand;
+import eu.alebianco.robotlegs.utils.support.TestStringCommand;
 import eu.alebianco.robotlegs.utils.support.MacroWithNamedPayload;
 import eu.alebianco.robotlegs.utils.support.MacroWithNumberPayload;
+import eu.alebianco.robotlegs.utils.support.MacroWithPseudoNullPayload;
 import eu.alebianco.robotlegs.utils.support.MacroWithSimplePayload;
-import eu.alebianco.robotlegs.utils.support.NamedHelloCommand;
-import eu.alebianco.robotlegs.utils.support.NumberTestCommand;
+import eu.alebianco.robotlegs.utils.support.NamedStringTestCommand;
+import eu.alebianco.robotlegs.utils.support.TestNumberCommand;
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -69,7 +71,7 @@ public class PayloadsTest {
         subject.map("trigger", Event).toCommand(MacroWithNamedPayload);
         const event:Event = new Event("trigger");
         dispatcher.dispatchEvent(event);
-        assertThat(reported, array(MacroWithNamedPayload, NamedHelloCommand, "world"));
+        assertThat(reported, array(MacroWithNamedPayload, NamedStringTestCommand, "world"));
     }
 
     [Test]
@@ -77,7 +79,7 @@ public class PayloadsTest {
         subject.map("trigger", Event).toCommand(MacroWithSimplePayload);
         const event:Event = new Event("trigger");
         dispatcher.dispatchEvent(event);
-        assertThat(reported, array(MacroWithSimplePayload, HelloCommand, "world"));
+        assertThat(reported, array(MacroWithSimplePayload, TestStringCommand, "world"));
     }
 
 	[Test]
@@ -85,7 +87,15 @@ public class PayloadsTest {
 		subject.map("trigger", Event).toCommand(MacroWithNumberPayload);
 		const event:Event = new Event("trigger");
 		dispatcher.dispatchEvent(event);
-		assertThat(reported, array(MacroWithNumberPayload, NumberTestCommand, Math.PI));
+		assertThat(reported, array(MacroWithNumberPayload, TestNumberCommand, Math.PI));
+	}
+
+	[Test]
+	public function pseudo_null_values_are_mapped_as_payloads():void {
+		subject.map("trigger", Event).toCommand(MacroWithPseudoNullPayload);
+		const event:Event = new Event("trigger");
+		dispatcher.dispatchEvent(event);
+		assertThat(reported, array(MacroWithPseudoNullPayload, TestStringCommand, "", TestIntCommand, 0, TestNumberCommand, NaN));
 	}
 }
 }

@@ -9,7 +9,7 @@
 package eu.alebianco.robotlegs.utils.support {
 import robotlegs.bender.bundles.mvcs.Command;
 
-public class NamedHelloCommand extends Command {
+public class NamedStringTestCommand extends Command {
 
     [Inject(name="target")]
     public var who:String;
@@ -19,7 +19,7 @@ public class NamedHelloCommand extends Command {
 
     [PostConstruct]
     public function init():void {
-        reportingFunc(NamedHelloCommand)
+        reportingFunc(NamedStringTestCommand)
     }
 
     override public function execute():void {
