@@ -7,6 +7,13 @@
  * Copyright © 2013 Alessandro Bianco
  */
 package eu.alebianco.robotlegs.utils {
+import eu.alebianco.robotlegs.utils.support.HelloCommand;
+import eu.alebianco.robotlegs.utils.support.MacroWithNamedPayload;
+import eu.alebianco.robotlegs.utils.support.MacroWithNumberPayload;
+import eu.alebianco.robotlegs.utils.support.MacroWithSimplePayload;
+import eu.alebianco.robotlegs.utils.support.NamedHelloCommand;
+import eu.alebianco.robotlegs.utils.support.NumberTestCommand;
+
 import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
@@ -86,96 +93,4 @@ public class PayloadsTest {
 		assertThat(reported, array(MacroWithNumberPayload, NumberTestCommand, Math.PI));
 	}
 }
-}
-
-import eu.alebianco.robotlegs.utils.impl.SequenceMacro;
-import eu.alebianco.robotlegs.utils.impl.SubCommandPayload;
-
-import robotlegs.bender.bundles.mvcs.Command;
-
-class MacroWithSimplePayload extends SequenceMacro {
-    [Inject(name="reportingFunction")]
-    public var reportingFunc:Function;
-
-    override public function prepare():void {
-        reportingFunc(MacroWithSimplePayload);
-        add(HelloCommand).withPayloads("world");
-    }
-}
-
-class MacroWithNamedPayload extends SequenceMacro {
-    [Inject(name="reportingFunction")]
-    public var reportingFunc:Function;
-
-    override public function prepare():void {
-        reportingFunc(MacroWithNamedPayload);
-        var payload:SubCommandPayload = new SubCommandPayload("world", String).withName("target");
-        add(NamedHelloCommand).withPayloads(payload);
-    }
-}
-
-class HelloCommand extends Command {
-
-    [Inject]
-    public var who:String;
-
-    [Inject(name="reportingFunction")]
-    public var reportingFunc:Function;
-
-    [PostConstruct]
-    public function init():void {
-        reportingFunc(HelloCommand)
-    }
-
-    override public function execute():void {
-        reportingFunc(who)
-    }
-}
-
-class NamedHelloCommand extends Command {
-
-    [Inject(name="target")]
-    public var who:String;
-
-    [Inject(name="reportingFunction")]
-    public var reportingFunc:Function;
-
-    [PostConstruct]
-    public function init():void {
-        reportingFunc(NamedHelloCommand)
-    }
-
-    override public function execute():void {
-        reportingFunc(who)
-    }
-}
-
-//testing number
-
-class MacroWithNumberPayload extends SequenceMacro {
-	[Inject(name="reportingFunction")]
-	public var reportingFunc:Function;
-
-	override public function prepare():void {
-		reportingFunc(MacroWithNumberPayload);
-		add(NumberTestCommand).withPayloads(Math.PI);
-	}
-}
-
-class NumberTestCommand extends Command {
-
-	[Inject]
-	public var number:Number;
-
-	[Inject(name="reportingFunction")]
-	public var reportingFunc:Function;
-
-	[PostConstruct]
-	public function init():void {
-		reportingFunc(NumberTestCommand);
-	}
-
-	override public function execute():void {
-		reportingFunc(number);
-	}
 }
