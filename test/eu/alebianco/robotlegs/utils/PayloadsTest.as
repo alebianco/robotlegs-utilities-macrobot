@@ -7,6 +7,7 @@
  * Copyright © 2013 Alessandro Bianco
  */
 package eu.alebianco.robotlegs.utils {
+import eu.alebianco.robotlegs.utils.support.MacroWithXMLPayload;
 import eu.alebianco.robotlegs.utils.support.TestIntCommand;
 import eu.alebianco.robotlegs.utils.support.TestStringCommand;
 import eu.alebianco.robotlegs.utils.support.MacroWithNamedPayload;
@@ -15,6 +16,8 @@ import eu.alebianco.robotlegs.utils.support.MacroWithPseudoNullPayload;
 import eu.alebianco.robotlegs.utils.support.MacroWithSimplePayload;
 import eu.alebianco.robotlegs.utils.support.NamedStringTestCommand;
 import eu.alebianco.robotlegs.utils.support.TestNumberCommand;
+import eu.alebianco.robotlegs.utils.support.TestXMLCommand;
+import eu.alebianco.robotlegs.utils.support.TestXMLListCommand;
 
 import flash.events.Event;
 import flash.events.EventDispatcher;
@@ -96,6 +99,14 @@ public class PayloadsTest {
 		const event:Event = new Event("trigger");
 		dispatcher.dispatchEvent(event);
 		assertThat(reported, array(MacroWithPseudoNullPayload, TestStringCommand, "", TestIntCommand, 0, TestNumberCommand, NaN));
+	}
+
+	[Test]
+	public function xml_values_as_payloads():void {
+		subject.map("trigger", Event).toCommand(MacroWithXMLPayload);
+		const event:Event = new Event("trigger");
+		dispatcher.dispatchEvent(event);
+		assertThat(reported, array(MacroWithXMLPayload, TestXMLCommand, "color", TestXMLListCommand, 7));
 	}
 }
 }
