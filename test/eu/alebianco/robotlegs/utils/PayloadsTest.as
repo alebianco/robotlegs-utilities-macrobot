@@ -80,11 +80,6 @@ public class PayloadsTest {
         assertThat(reported, array(MacroWithSimplePayload, HelloCommand, "world"));
     }
 
-	/**
-	 * assurance that Proxy, Number, XML, XMLList, Vector instances are managed correctly
-	 * for more info see: https://github.com/robotlegs/swiftsuspenders/blob/master/src/org/swiftsuspenders/reflection/ReflectorBase.as
-	 */
-
 	[Test]
 	public function number_values_are_mapped_as_payloads():void {
 		subject.map("trigger", Event).toCommand(MacroWithNumberPayload);
