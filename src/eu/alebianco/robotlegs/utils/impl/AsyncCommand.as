@@ -30,8 +30,16 @@ public class AsyncCommand implements IAsyncCommand {
     protected function dispatchComplete(success:Boolean):void {
         context.release(this);
         for each (var listener:Function in listeners) {
-            listener(success);
+			if (listener.length == 0){
+				listener();
+			} else {
+				listener(success);
+			}
         }
+	    if (listeners) {
+		    listeners.length = 0;
+		    listeners = null;
+	    }
     }
 }
 }
