@@ -21,7 +21,7 @@ final public class SubCommandPayload {
     }
 
     public function SubCommandPayload(data:*, type:Class = null) {
-        if (data == null || data == undefined) {
+        if (data === null || data === undefined) {
             throw new ArgumentError("Payload data can't be null");
         }
         _data = data;
