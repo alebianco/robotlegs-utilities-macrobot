@@ -14,7 +14,7 @@ import eu.alebianco.robotlegs.utils.support.MacroWithNamedPayload;
 import eu.alebianco.robotlegs.utils.support.MacroWithNumberPayload;
 import eu.alebianco.robotlegs.utils.support.MacroWithPseudoNullPayload;
 import eu.alebianco.robotlegs.utils.support.MacroWithSimplePayload;
-import eu.alebianco.robotlegs.utils.support.NamedStringTestCommand;
+import eu.alebianco.robotlegs.utils.support.TestNameStringCommand;
 import eu.alebianco.robotlegs.utils.support.TestNumberCommand;
 import eu.alebianco.robotlegs.utils.support.TestXMLCommand;
 import eu.alebianco.robotlegs.utils.support.TestXMLListCommand;
@@ -74,7 +74,7 @@ public class PayloadsTest {
         subject.map("trigger", Event).toCommand(MacroWithNamedPayload);
         const event:Event = new Event("trigger");
         dispatcher.dispatchEvent(event);
-        assertThat(reported, array(MacroWithNamedPayload, NamedStringTestCommand, "world"));
+        assertThat(reported, array(MacroWithNamedPayload, TestNameStringCommand, "world"));
     }
 
     [Test]
