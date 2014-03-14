@@ -27,7 +27,6 @@ import org.hamcrest.assertThat;
 import org.hamcrest.collection.array;
 
 import robotlegs.bender.extensions.commandCenter.api.ICommandMapping;
-import robotlegs.bender.extensions.commandCenter.impl.CommandMapping;
 import robotlegs.bender.extensions.eventCommandMap.api.IEventCommandMap;
 import robotlegs.bender.extensions.eventCommandMap.impl.EventCommandMap;
 import robotlegs.bender.framework.api.IContext;
@@ -45,12 +44,6 @@ public class PayloadsTest {
 
     private function reportingFunction(item:Object):void {
         reported.push(item);
-    }
-
-    private function addMapping(commandClass:Class):ICommandMapping {
-        var mapping:ICommandMapping = new CommandMapping(commandClass);
-        mappings.push(mapping);
-        return mapping;
     }
 
     [Before]
