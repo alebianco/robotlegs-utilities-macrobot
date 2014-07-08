@@ -10,7 +10,10 @@ package eu.alebianco.robotlegs.utils.impl {
 import eu.alebianco.robotlegs.utils.api.ISubCommandMapping;
 import eu.alebianco.robotlegs.utils.dsl.ISubCommandConfigurator;
 
-final internal class SubCommandMapping implements ISubCommandMapping, ISubCommandConfigurator {
+	import robotlegs.bender.extensions.commandCenter.api.ICommand;
+	import robotlegs.bender.framework.api.IInjector;
+
+	internal class SubCommandMapping implements ISubCommandMapping, ISubCommandConfigurator {
 
     private var _commandClass:Class;
     private var _executeMethod:String = 'execute';
@@ -70,5 +73,9 @@ final internal class SubCommandMapping implements ISubCommandMapping, ISubComman
         _executeMethod = name;
         return this;
     }
+
+	public function getOrCreateCommandInstance(injector : IInjector) : ICommand {
+		return injector.getOrCreateNewInstance(commandClass);
+	}
 }
 }
