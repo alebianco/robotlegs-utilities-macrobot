@@ -36,6 +36,12 @@ internal class AbstractMacro extends AsyncCommand implements IMacro {
         return mapping;
     }
 
+	public function addInstance(command : ICommand) : ISubCommandConfigurator {
+		const mapping:SubCommandMapping = new SubCommandInstanceMapping(command);
+		mappings.addMapping(mapping);
+		return mapping;
+	}
+
     public function remove(commandClass:Class):void {
         mappings.removeMappingsFor(commandClass);
     }
@@ -59,7 +65,7 @@ internal class AbstractMacro extends AsyncCommand implements IMacro {
         hasPayloads && mapPayloads(payloads);
 
         if (mapping.guards.length == 0 || guardsApprove(mapping.guards, injector)) {
-            command = injector.getOrCreateNewInstance(commandClass);
+            command = mapping.getOrCreateCommandInstance(injector);
 
             if (mapping.hooks.length > 0) {
                 injector.map(commandClass).toValue(command);
