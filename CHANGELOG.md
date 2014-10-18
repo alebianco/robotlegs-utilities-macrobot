@@ -1,5 +1,10 @@
 ## HEAD
 
+### 0.9.7 (October 18, 2013)
+
+* updated to Robotlegs 2.2.1
+* merged pull request #13 - added possibility to map an instance
+
 ### 0.9.6 (August 10, 2013)
 
 * updated to Robotlegs 2.1.0
