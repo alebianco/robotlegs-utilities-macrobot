@@ -7,7 +7,10 @@
  * Copyright © 2011 - 2013 Alessandro Bianco
  */
 package eu.alebianco.robotlegs.utils.api {
-public interface ISubCommandMapping {
+	import robotlegs.bender.extensions.commandCenter.api.ICommand;
+	import robotlegs.bender.framework.api.IInjector;
+
+	public interface ISubCommandMapping {
     function get commandClass():Class;
 
     function get executeMethod():String;
@@ -17,5 +20,7 @@ public interface ISubCommandMapping {
     function get hooks():Array;
 
     function get payloads():Array;
+
+	function getOrCreateCommandInstance(injector : IInjector) : ICommand;
 }
 }

@@ -8,6 +8,7 @@
  */
 package suites {
 import eu.alebianco.robotlegs.utils.AsyncCallbackTest;
+import eu.alebianco.robotlegs.utils.InstanceTest;
 import eu.alebianco.robotlegs.utils.PayloadsTest;
 
 [RunWith("org.flexunit.runners.Suite")]
@@ -15,5 +16,6 @@ import eu.alebianco.robotlegs.utils.PayloadsTest;
 public class FullSuite {
     public var payloads:PayloadsTest;
     public var callbacks:AsyncCallbackTest;
+    public var instances:InstanceTest;
 }
 }
