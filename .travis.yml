@@ -1,0 +1,40 @@
+#
+# Project: robotlegs-utilities-macrobot
+#
+# Author:  Alessandro Bianco
+# Website: http://alessandrobianco.eu
+# Twitter: @alebianco
+# Created: 18/10/2014 23.12
+#
+
+language: objective-c
+
+git:
+  depth: 1
+
+env:
+  - TERM=dumb
+
+deploy:
+  provider: releases
+  api-key:
+    secure: "Gn4bJExFYdvkgPDWFZO8CQCnzSYmxjCE6h5y2MsTk1ots7nYwzTQEOz9n5rRqds75SkL3KriMd3bBgOqg9I+ukClbVPI0mM0b+8sRZXoc9EG5rMBrrhi/d1DvSCEbDt/iqrcJvkzASLdCeO2Nw4Kt458P/IpPRliYFaDKHWyrq4="
+  file: "release/*.zip"
+  file_glob: true
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
+
+before_install:
+  - brew update >brew-update.log
+  - chmod +x gradlew
+
+install:
+  - brew install caskroom/cask/brew-cask
+  - brew cask install flash-player-debugger
+
+before_script:
+  - export FLASH_PLAYER_EXE="$HOME/Applications/Flash Player Debugger.app/Contents/MacOS/Flash Player Debugger"
+
+script: ./gradlew release
