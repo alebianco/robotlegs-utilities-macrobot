@@ -1,0 +1,167 @@
+/*
+ * Project: robotlegs-utilities-macrobot
+ *
+ * Author:  Alessandro Bianco
+ * Website: http://alessandrobianco.eu
+ * Twitter: @alebianco
+ * Created: 18/10/2014 14.54
+ */
+
+buildscript {
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven { url 'http://dl.bintray.com/content/aalmiray/kordamp' }
+    }
+
+    dependencies {
+        classpath group: 'org.gradlefx', name: 'gradlefx', version: '1.0'
+        classpath group: 'org.kordamp', name: 'markdown-gradle-plugin', version: '0.1.1'
+    }
+
+    defaultTasks 'build', 'uploadArchives'
+
+    fileTree(dir: 'gradle', include: '*.properties').each {
+        File file -> file.withInputStream { stream ->
+            Properties props = new Properties()
+            props.load(stream)
+            props.each { key, value -> project.properties.ext.setProperty(key, value) }
+        }
+    }
+
+    project.properties.ext.setProperty('os_family', System.properties['os.name'].toLowerCase()[0..2])
+
+    allprojects {
+        gradle.taskGraph.whenReady { taskGraph ->
+            if (!taskGraph.hasTask(release)) {
+                this.properties.ext['product.version'] += '-SNAPSHOT'
+            }
+        }
+    }
+}
+
+apply plugin: 'gradlefx'
+apply plugin: 'markdown'
+apply plugin: 'maven'
+
+type = 'swc'
+fatSwc = true
+
+additionalCompilerOptions = [
+        '-swf-version=26',
+        '-target-player=15.0',
+        '-verbose-stacktraces=true',
+        '-load-config=air-config.xml',
+        '-static-link-runtime-shared-libraries=true',
+        "-define=PRODUCT::name,'${this.properties['product.name']}'",
+        "-define=PRODUCT::version,'${this.properties['product.version']}'",
+]
+
+repositories {
+    ivy {
+        name 'Apache'
+        artifactPattern 'http://apache.cu.be/flex/[revision]/binaries/[module]-[revision]-bin.[ext]'
+    }
+
+    ivy {
+        name 'Adobe Air SDK'
+        artifactPattern 'http://download.macromedia.com/air/win/download/[revision]/[module].[ext]'
+    }
+}
+
+dependencies {
+    flexSDK group: 'org.apache', name: 'apache-flex-sdk', version: '4.13.0', ext: 'tar.gz'
+    airSDK group: 'com.adobe', name: 'AdobeAIRSDK', version: '15.0', ext: 'zip'
+
+    merged files("libs/robotlegs-framework-v2.2.1.swc")
+
+    test files("libs/flexUnitTasks-4.2.0-20140410.jar",
+               "libs/flexunit-4.2.0-20140410-flex_4.12.0.swc",
+               "libs/flexunit-uilistener-4.2.0-20140410-4.12.0.swc",
+               "libs/flexunit-cilistener-4.2.0-20140410-4.12.0.swc",
+               "libs/hamcrest-as3-only-1.1.3.swc")
+}
+
+sdkAutoInstall {
+    showPrompts	= false
+}
+
+flexUnit {
+    command = System.getenv('FLASH_PLAYER_EXE') ?: this.properties["${os_family}.flash.player"]
+}
+
+asdoc {
+    additionalASDocOptions = [
+            '-strict=false',
+            '-lenient=false',
+            '-left-frameset-width=320',
+            "-window-title=${this.properties['product.title']} ${this.properties['product.version']}",
+            "-main-title=${this.properties['product.title']} ${this.properties['product.version']}",
+            "-footer=${this.properties['product.name']} - '${this.properties['repository.url']}"
+    ]
+}
+
+clean {
+    delete += files('release', 'doc')
+}
+
+task release (dependsOn: ['clean', 'build'], type: Zip) {
+    def touch = new Date().format('yyyyMMddHHmm')
+    destinationDir new File(projectDir, 'release')
+    archiveName "${this.properties['product.name']}-${this.properties['product.version']}_${touch}.zip"
+    from(buildDir) {
+        include "${project.name}.swc"
+        into 'bin'
+    }
+    from("${buildDir}/gen-html") {
+        include "*.html"
+        rename { String fileName -> fileName.toLowerCase() }
+    }
+    from(asdoc.outputDir) {
+        include '**/*'
+        exclude 'tempdita'
+        into 'doc'
+    }
+
+    doFirst {
+        copy {
+            from projectDir
+            into "$buildDir/markdown"
+            include "*.md"
+        }
+        markdownToHtml.execute()
+    }
+}
+
+group = this.properties['product.group']
+version = this.properties['product.version']
+
+artifacts {
+    archives file: file("${buildDir}/${project.name}.swc"),  name: project.name
+}
+
+uploadArchives {
+    repositories {
+        mavenLocal()
+    }
+}
+
+markdownToHtml {
+    sourceDir = new File("$buildDir/markdown")
+    configuration = [
+            fencedCodeBlocks: true,
+            smart : true,
+            definitionLists : true,
+            abbreviations: true,
+            autoLinks: true,
+            hardwraps: true,
+            tables: true
+    ]
+}
+
+build.shouldRunAfter clean
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}

@@ -1,0 +1,2 @@
+mac.flash.player = /Applications/Flash Player Debugger.app/Contents/MacOS/Flash Player Debugger
+win.flash.player = C:/Program Files (x86)/Apache Flex/player/win/15.0.0.152/flashplayer_15_sa_debug.exe

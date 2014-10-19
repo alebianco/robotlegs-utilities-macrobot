@@ -1,0 +1,10 @@
+/*
+ * Project: robotlegs-utilities-macrobot
+ *
+ * Author:  Alessandro Bianco
+ * Website: http://alessandrobianco.eu
+ * Twitter: @alebianco
+ * Created: 18/10/2014 14.54
+ */
+
+rootProject.name = 'robotlegs-utilities-macrobot'
