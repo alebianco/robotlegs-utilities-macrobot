@@ -1,5 +1,9 @@
 ## HEAD
 
+### 0.9.71 (October 19, 2013)
+
+* Moved to a Gradle powered build system
+
 ### 0.9.7 (October 18, 2013)
 
 * updated to Robotlegs 2.2.1
