@@ -1,10 +1,7 @@
-/.settings/*
-/html-template/*
-/bin-debug/*
-/bin-release/*
-/bin/*
-/docs/*
-/reports/*
+.gradle
+/doc
+/build
+/release
 
 .actionScriptProperties
 .flexProperties
@@ -21,3 +18,4 @@ Thumbs.db
 
 .idea
 *.iml
+/out
