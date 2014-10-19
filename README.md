@@ -15,6 +15,10 @@ Macrobot simplifies this process and provide two way to group commands:
 
 **Parallel**: The commands will be executed as quickly as possible, with no regards on the order in which they were registered. The macro itself will not be complete until all its commands are complete.
 
+# Releases
+
+You'll find new versions of the extension in the [Releases page](https://github.com/alebianco/robotlegs-utilities-macrobot/releases) of the repository.
+
 ## Usage
 
 To create a macro command, extend on the two classes Macrobot provides: `ParallelMacro` or `SequenceMacro`.  
