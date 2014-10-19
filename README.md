@@ -1,4 +1,6 @@
-# Macrobot: Macro Commands For Robotlegs2
+# Macrobot
+
+[![Build Status](https://travis-ci.org/alebianco/robotlegs-utilities-macrobot.svg?branch=master)](https://travis-ci.org/alebianco/robotlegs-utilities-macrobot)
 
 Macro command utility for Robotlegs which provides the ability to execute batches of commands in sequential or parallel fashion.
 
@@ -161,16 +163,10 @@ This behaviour does not apply to parallel commands.
 
 ## Building
 
-In the **build** folder, make a copy of the _user.properties.eg_ file and call it _user.properties_  
-Edit that file to provide values specific to your system  
-Use the `build.xml` ant script you'll find in the **build** folder, to build the project
+In the **gradle** folder, make a copy of the _user.properties.eg_ file and call it _user.properties_
+Edit that file to provide values specific to your system
+Use the `gradlew` script to build the project
 
 ## Contributing
 
-If you want to contribute to the project refer to the [CONTRIBUTING.md](CONTRIBUTING.md) document for guidelines.
-
-## Roadmap
-
-* document the code
-* allow functions or instances to be added as sub commands
-* add test coverage
+If you want to contribute to the project refer to the [contributing document](CONTRIBUTING.md) for guidelines.
