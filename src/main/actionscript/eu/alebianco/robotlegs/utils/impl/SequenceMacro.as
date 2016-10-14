@@ -13,12 +13,12 @@ import eu.alebianco.robotlegs.utils.api.ISubCommandMapping;
 
 public class SequenceMacro extends AbstractMacro implements IMacro {
 
-    private var executionIndex:uint;
+    protected var executionIndex:uint;
 
-    private var success:Boolean = true;
-    private var running:Boolean = false;
+    protected var success:Boolean = true;
+    protected var running:Boolean = false;
 
-    private var commands:Vector.<ISubCommandMapping>;
+    protected var commands:Vector.<ISubCommandMapping>;
 
     private var _atomic:Boolean = true;
     public function get atomic():Boolean {
@@ -48,7 +48,7 @@ public class SequenceMacro extends AbstractMacro implements IMacro {
         }
     }
 
-    private function get hasCommands():Boolean {
+    protected function get hasCommands():Boolean {
         return commands && executionIndex < commands.length;
     }
 
