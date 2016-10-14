@@ -13,12 +13,12 @@ import eu.alebianco.robotlegs.utils.api.ISubCommandMapping;
 
 public class ParallelMacro extends AbstractMacro implements IMacro {
 
-    private var executionCount:uint = 0;
+    protected var executionCount:uint = 0;
 
-    private var commands:Vector.<ISubCommandMapping>;
+    protected var commands:Vector.<ISubCommandMapping>;
 
-    private var success:Boolean = true;
-    private var running:Boolean = false;
+    protected var success:Boolean = true;
+    protected var running:Boolean = false;
 
     override public function execute():void {
         super.execute();
@@ -34,7 +34,7 @@ public class ParallelMacro extends AbstractMacro implements IMacro {
         }
     }
 
-    private function get hasCommands():Boolean {
+    protected function get hasCommands():Boolean {
         return mappings && commands.length > 0;
     }
 
