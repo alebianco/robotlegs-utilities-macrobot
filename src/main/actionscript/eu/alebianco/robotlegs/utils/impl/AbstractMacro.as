@@ -17,7 +17,7 @@ import robotlegs.bender.framework.api.IInjector;
 import robotlegs.bender.framework.impl.applyHooks;
 import robotlegs.bender.framework.impl.guardsApprove;
 
-internal class AbstractMacro extends AsyncCommand implements IMacro {
+public class AbstractMacro extends AsyncCommand implements IMacro {
 
     [Inject]
     public var injector:IInjector;
